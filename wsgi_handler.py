@@ -62,7 +62,7 @@ def handler(event, context):
     if "_serverless-wsgi" in event:
         import shlex
         import subprocess
-        from werkzeug._compat import StringIO, to_native
+        from io import StringIO
 
         native_stdout = sys.stdout
         native_stderr = sys.stderr
@@ -81,7 +81,7 @@ def handler(event, context):
                 result = subprocess.check_output(
                     meta.get("data", ""), shell=True, stderr=subprocess.STDOUT
                 )
-                output_buffer.write(to_native(result))
+                output_buffer.write(result.decode(sys.getdefaultencoding(), "strict"))
             elif meta.get("command") == "manage":
                 # Run Django management commands
                 from django.core import management
